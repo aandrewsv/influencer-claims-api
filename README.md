@@ -1,99 +1,150 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Influencer Claims API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API para verificar influencers y analizar sus declaraciones de salud en redes sociales.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Descripción
 
-## Description
+Esta API está construida con NestJS y proporciona funcionalidades para:
+- Verificar y registrar influencers
+- Analizar declaraciones de salud realizadas por influencers
+- Gestionar tareas de investigación sobre declaraciones de salud
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Funcionalidades Principales
 
-## Project setup
+- **Verificación de Influencers**: Sistema automatizado para verificar y registrar influencers.
+- **Análisis de Declaraciones**: Capacidad para analizar y evaluar declaraciones de salud.
+- **Gestión de Investigaciones**: Sistema de tareas para investigar y dar seguimiento a las declaraciones.
 
+## Requisitos Previos
+
+- Node.js (v18 o superior)
+- npm (incluido con Node.js)
+- SQLite (incluido en el proyecto)
+
+## Instalación
+
+1. Clonar el repositorio:
 ```bash
-$ npm install
+git clone [url-del-repositorio]
+cd influencer-claims-api
 ```
 
-## Compile and run the project
-
+2. Instalar dependencias:
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
-
+3. Iniciar la aplicación en modo desarrollo:
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run start:dev
 ```
 
-## Deployment
+La API estará disponible en `http://localhost:3000`
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Uso
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Endpoints Disponibles
 
-```bash
-$ npm install -g mau
-$ mau deploy
-```
+#### Influencers
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+- `POST /influencers/verify`
+  - Verifica y registra un nuevo influencer
+  - Body: `{ "handle": "nombre_usuario" }`
 
-## Resources
+- `GET /influencers`
+  - Obtiene lista de todos los influencers registrados
 
-Check out a few resources that may come in handy when working with NestJS:
+- `GET /influencers/:id`
+  - Obtiene detalles de un influencer específico
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+#### Investigación
 
-## Support
+- `POST /research/tasks`
+  - Crea una nueva tarea de investigación
+  - Body: Datos parciales de ResearchTask
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- `GET /research/tasks`
+  - Obtiene todas las tareas de investigación
 
-## Stay in touch
+- `GET /research/tasks/:id`
+  - Obtiene detalles de una tarea específica
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- `DELETE /research/tasks/:id`
+  - Elimina una tarea de investigación
 
-## License
+## Scripts Disponibles
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- `npm run build` - Compila el proyecto
+- `npm run format` - Formatea el código usando Prettier
+- `npm run start` - Inicia la aplicación
+- `npm run start:dev` - Inicia la aplicación en modo desarrollo con hot-reload
+- `npm run start:debug` - Inicia la aplicación en modo debug
+- `npm run start:prod` - Inicia la aplicación en modo producción
+- `npm run lint` - Ejecuta el linter
+- `npm test` - Ejecuta los tests
+- `npm run test:watch` - Ejecuta los tests en modo watch
+- `npm run test:cov` - Ejecuta los tests con cobertura
+- `npm run test:e2e` - Ejecuta los tests end-to-end
+
+## Base de Datos
+
+El proyecto utiliza SQLite como base de datos, lo que significa que:
+- No requiere configuración adicional de base de datos
+- Los datos se almacenan en el archivo `db.sqlite`
+- Ideal para desarrollo y pruebas
+
+## Manejo de Errores
+
+La API incluye manejo de errores para:
+- Límites de tokens en respuestas
+- Errores de verificación de influencers
+- Errores en la creación de tareas de investigación
+
+## Estrategias de Deduplicación
+
+### Influencers
+
+El sistema implementa una estrategia robusta para evitar la duplicación de influencers:
+
+1. **Verificación Inicial**:
+   - Utiliza Perplexity AI para verificar si el handle corresponde a un influencer de salud
+   - Recopila información detallada incluyendo nombre principal, aliases y datos relevantes
+
+2. **Detección de Duplicados**:
+   - Compara el handle y aliases del nuevo influencer con los existentes
+   - La comparación es case-insensitive para mayor precisión
+   - Considera múltiples variantes de nombres de usuario
+
+3. **Actualización Automática**:
+   - Si se encuentra un influencer existente, se actualiza su información
+   - Se mantienen datos actualizados de:
+     - Nombre principal
+     - Descripción
+     - Aliases
+     - Tags de contenido
+     - Ingresos estimados
+     - Seguidores totales
+     - Fecha de última verificación
+
+### Claims (Declaraciones)
+
+Para evitar la duplicación de declaraciones de salud:
+
+1. **Verificación de Similitud**:
+   - Utiliza el algoritmo de Levenshtein distance
+   - Compara nuevas declaraciones con las existentes del mismo influencer
+   - Considera similares las declaraciones con 85% o más de coincidencia
+
+2. **Gestión de Duplicados**:
+   - Cuando se crea una nueva tarea de investigación, el sistema analiza las declaraciones encontradas
+   - Si una declaración es similar a una existente (≥85% similitud), en lugar de crear un duplicado:
+     - Se reutiliza la declaración existente
+     - La nueva tarea de investigación se vincula a esta declaración existente
+   - Esto permite mantener un historial unificado de cada declaración a través de múltiples tareas de investigación
+
+## Notas Adicionales
+
+- La API utiliza TypeORM para la gestión de la base de datos
+- Incluye validación de datos mediante class-validator
+- Implementa el patrón de arquitectura REST
+- Soporta operaciones CRUD para las entidades principales
