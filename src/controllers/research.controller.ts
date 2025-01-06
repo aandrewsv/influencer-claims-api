@@ -11,15 +11,14 @@ import {
 } from '@nestjs/common';
 import { ResearchService } from '../services/research.service';
 import { ResearchTask } from '../entities/research-task.entity';
+import { CreateResearchDto } from '../dto/create-research.dto';
 
 @Controller('research')
 export class ResearchController {
   constructor(private readonly researchService: ResearchService) {}
 
   @Post('tasks')
-  async createTask(
-    @Body() taskData: Partial<ResearchTask>,
-  ): Promise<ResearchTask> {
+  async createTask(@Body() taskData: CreateResearchDto): Promise<ResearchTask> {
     try {
       return await this.researchService.createTask(taskData);
     } catch (error) {
@@ -35,10 +34,10 @@ export class ResearchController {
             message: 'Response was cut off due to max_tokens limit.',
             details:
               'To resolve this issue, you can either:\n' +
-              '1. Increase the max_tokens parameter in your request (recommended range: 4096-8192)\n' +
-              '2. Reduce the claimsCount parameter in your request (try 25 claims instead of 50)\n' +
+              '1. Increase the max_tokens parameter in your request (range: 100-5000, recommended: 4000)\n' +
+              '2. Reduce the claimsCount parameter in your request (ex: try 25 claims instead of 50)\n' +
               'The amount of tokens needed depends on the complexity and number of claims being analyzed. ' +
-              'Your current request for 50 claims requires more tokens than the current limit.',
+              'Your current request requires more tokens than the current limit.',
             error: 'MaxTokensError',
             statusCode: HttpStatus.BAD_REQUEST,
           },

@@ -17,6 +17,7 @@ export class HealthClaimsAnalyzer {
     timeRange: string,
     claimsCount: number,
     journals: string[],
+    max_tokens?: number,
   ): Promise<HealthClaim[]> {
     try {
       const prompt = `Analyze the health-related content from "${username}" within the ${timeRange} and extract exactly ${claimsCount} most significant health claims without duplicates.
@@ -35,7 +36,7 @@ Follow these rules:
    - journalsDebunked: list of the provided cross-referenced journals that debunk the claim (if any)
    - score: Calculate a credibility score (0-1) based on the claim's verification status and general journal consensus
 
-Respond with ONLY a JSON array of ${claimsCount} claims.
+Respond with ONLY a JSON array of ${claimsCount} claims. Absolutely no other text or explanations. Just the claims. The claims should be formatted as a JSON array.
 Example format:
 [
   {
@@ -51,7 +52,9 @@ Example format:
   }
 ]`;
 
-      const response = await this.perplexity.query(prompt);
+      const response = await this.perplexity.query(prompt, {
+        maxTokens: max_tokens,
+      });
       try {
         // Remove markdown code block delimiters
         const cleanResponse = response.replace(/```json|```/g, '').trim();
@@ -170,6 +173,7 @@ Example format:
       timeRange: string;
       claimsCount: number;
       journals: string[];
+      max_tokens?: number;
     },
   ): Promise<AnalysisResult> {
     try {
@@ -181,6 +185,7 @@ Example format:
         options.timeRange,
         options.claimsCount,
         options.journals,
+        options.max_tokens,
       );
       console.log(`Retrieved ${claims.length} claims`);
 

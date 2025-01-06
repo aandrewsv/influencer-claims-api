@@ -70,6 +70,7 @@ export class ResearchService {
           timeRange: taskData.timeRange,
           claimsCount: taskData.claimsCount,
           journals: taskData.selectedJournals,
+          max_tokens: taskData.max_tokens,
         },
       );
 

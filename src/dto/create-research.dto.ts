@@ -3,11 +3,11 @@ import {
   IsNumber,
   IsString,
   IsArray,
-  MinLength,
   MaxLength,
   ArrayMinSize,
   Min,
   Max,
+  IsIn,
 } from 'class-validator';
 
 export class CreateResearchDto {
@@ -15,9 +15,13 @@ export class CreateResearchDto {
   influencerId: number;
 
   @IsString()
-  @MinLength(4)
-  @MaxLength(20)
+  @IsIn(['Last Week', 'Last Month', 'Last Year', 'All Time'])
   timeRange: string;
+
+  @IsNumber()
+  @Min(100)
+  @Max(5000)
+  max_tokens: number;
 
   @IsNumber()
   @Min(1)
