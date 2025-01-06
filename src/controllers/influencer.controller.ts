@@ -10,6 +10,10 @@ import {
 } from '@nestjs/common';
 import { InfluencerService } from '../services/influencer.service';
 import { Influencer } from '../entities/influencer.entity';
+import {
+  LeaderboardStats,
+  InfluencerListItem,
+} from '../types/leaderboard.types';
 
 class VerifyInfluencerDto {
   handle: string;
@@ -50,6 +54,16 @@ export class InfluencerController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  @Get('stats')
+  async getLeaderboardStats(): Promise<LeaderboardStats> {
+    return this.influencerService.getLeaderboardStats();
+  }
+
+  @Get('list')
+  async getInfluencersList(): Promise<InfluencerListItem[]> {
+    return this.influencerService.getInfluencersList();
   }
 
   @Get()

@@ -3,7 +3,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Influencer } from '../entities/influencer.entity';
+import { Claim } from '../entities/claim.entity';
 import { InfluencerVerification } from '../utils/influencer-verification';
+import {
+  LeaderboardStats,
+  InfluencerListItem,
+} from '../types/leaderboard.types';
 
 @Injectable()
 export class InfluencerService {
@@ -12,6 +17,8 @@ export class InfluencerService {
   constructor(
     @InjectRepository(Influencer)
     private influencerRepo: Repository<Influencer>,
+    @InjectRepository(Claim)
+    private claimRepo: Repository<Claim>,
   ) {
     this.influencerVerification = new InfluencerVerification(
       process.env.PERPLEXITY_API_KEY,
@@ -94,6 +101,75 @@ export class InfluencerService {
       console.error('Influencer verification failed:', error);
       throw new Error('Failed to verify influencer');
     }
+  }
+
+  async getLeaderboardStats(): Promise<LeaderboardStats> {
+    const totalInfluencers = await this.influencerRepo.count();
+    const totalClaims = await this.claimRepo.count();
+
+    const result = await this.claimRepo
+      .createQueryBuilder('claim')
+      .select('AVG(claim.score)', 'averageScore')
+      .getRawOne();
+
+    return {
+      totalInfluencers,
+      totalClaims,
+      averageTrustScore: Number((Number(result.averageScore) || 0).toFixed(1)),
+    };
+  }
+
+  async getInfluencersList(): Promise<InfluencerListItem[]> {
+    const influencers = await this.influencerRepo.find({
+      relations: ['researchTasks'],
+    });
+
+    const influencerClaims = await Promise.all(
+      influencers.map(async (influencer) => {
+        const claims = await this.claimRepo.find({
+          where: { influencer: { id: influencer.id } },
+          order: { firstDetectedAt: 'DESC' },
+        });
+
+        const trustScore = Number(
+          (claims.length > 0
+            ? claims.reduce((sum, claim) => sum + claim.score, 0) /
+              claims.length
+            : 0
+          ).toFixed(1),
+        );
+
+        // Calculate trend based on comparing recent claims' scores with older ones
+        let trend: 'up' | 'down' = 'up';
+        if (claims.length >= 2) {
+          const midPoint = Math.floor(claims.length / 2);
+          const recentScores = claims.slice(0, midPoint);
+          const olderScores = claims.slice(midPoint);
+
+          const recentAvg =
+            recentScores.reduce((sum, claim) => sum + claim.score, 0) /
+            recentScores.length;
+          const olderAvg =
+            olderScores.reduce((sum, claim) => sum + claim.score, 0) /
+            olderScores.length;
+
+          trend = recentAvg >= olderAvg ? 'up' : 'down';
+        }
+
+        return {
+          id: influencer.id,
+          mainName: influencer.mainName,
+          description: influencer.description,
+          contentTags: influencer.contentTags.slice(0, 3),
+          trustScore,
+          trend,
+          totalFollowers: influencer.totalFollowers,
+          verifiedClaims: claims.length,
+        };
+      }),
+    );
+
+    return influencerClaims;
   }
 
   async findAll(): Promise<Influencer[]> {
