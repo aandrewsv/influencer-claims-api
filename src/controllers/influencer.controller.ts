@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { InfluencerService } from '../services/influencer.service';
 import { Influencer } from '../entities/influencer.entity';
+import { Claim } from '../entities/claim.entity';
 import {
   LeaderboardStats,
   InfluencerListItem,
@@ -87,7 +88,9 @@ export class InfluencerController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Influencer> {
+  async findOne(
+    @Param('id') id: number,
+  ): Promise<Influencer & { trustScore: number; claims: Claim[] }> {
     return this.influencerService.findOne(id);
   }
 }

@@ -185,7 +185,9 @@ export class InfluencerService {
     return this.influencerRepo.find();
   }
 
-  async findOne(id: number): Promise<Influencer> {
+  async findOne(
+    id: number,
+  ): Promise<Influencer & { trustScore: number; claims: Claim[] }> {
     const influencer = await this.influencerRepo.findOne({
       where: { id },
       relations: ['researchTasks'],
@@ -195,6 +197,22 @@ export class InfluencerService {
       throw new NotFoundException(`Influencer with ID ${id} not found`);
     }
 
-    return influencer;
+    const claims = await this.claimRepo.find({
+      where: { influencer: { id: influencer.id } },
+      order: { firstDetectedAt: 'DESC' },
+    });
+
+    const trustScore = Number(
+      (claims.length > 0
+        ? claims.reduce((sum, claim) => sum + claim.score, 0) / claims.length
+        : 0
+      ).toFixed(1),
+    );
+
+    return {
+      ...influencer,
+      trustScore,
+      claims,
+    };
   }
 }
