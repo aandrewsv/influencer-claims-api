@@ -7,6 +7,7 @@ import {
   Body,
   HttpException,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { InfluencerService } from '../services/influencer.service';
 import { Influencer } from '../entities/influencer.entity';
@@ -49,8 +50,22 @@ export class InfluencerController {
           HttpStatus.BAD_REQUEST,
         );
       }
+      if (error instanceof NotFoundException) {
+        throw new HttpException(
+          {
+            message: error.message,
+            error: 'Not Found',
+            statusCode: HttpStatus.NOT_FOUND,
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
       throw new HttpException(
-        'Failed to verify influencer',
+        {
+          message: 'Failed to verify influencer',
+          error: 'Internal Server Error',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

@@ -99,7 +99,16 @@ export class InfluencerService {
         throw maxTokensError;
       }
       console.error('Influencer verification failed:', error);
-      throw new Error('Failed to verify influencer');
+      // Extract name from handle by converting to title case
+      const name = handle
+        .split(/[-_]/)
+        .map(
+          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+        )
+        .join(' ');
+      throw new NotFoundException(
+        `${name} is not a recognized health influencer`,
+      );
     }
   }
 
